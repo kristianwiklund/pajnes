@@ -1,5 +1,5 @@
 
-IK*A SPARSNÄS clone, using an Adafruit 2.8" TFT on an RPI. 
+MVP on an IKEA SPARSNÄS clone, using an Adafruit 2.8" TFT on an RPI. 
 
 Consumes mqtt from https://github.com/psvanstrom/esphome-p1reader to display things on screen.
 
