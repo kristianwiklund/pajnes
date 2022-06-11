@@ -4,3 +4,6 @@
 [submodule "Raspberry-Pi-Installer-Scripts"]
 	path = Raspberry-Pi-Installer-Scripts
 	url = https://github.com/adafruit/Raspberry-Pi-Installer-Scripts.git
+[submodule "ticktock"]
+	path = ticktock
+	url = https://github.com/ytyou/ticktock.git
