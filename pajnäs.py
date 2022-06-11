@@ -39,9 +39,13 @@ disp_drv.register()
 indev_drv = lv.indev_drv_t()
 indev_drv.init()
 indev_drv.type = lv.INDEV_TYPE.POINTER
+indev = lv.indev_t()
+
 
 import evdev
-evdev_drv = evdev.mouse_indev()
+cursor = evdev.crosshair_cursor()
+
+evdev_drv = evdev.mouse_indev(cursor=cursor)
 indev_drv.read_cb = evdev_drv.mouse_read
 indev_drv.register()
 
@@ -113,6 +117,21 @@ tstyle = lv.style_t()
 tstyle.init()
 tstyle.set_text_font(lv.font_montserrat_40)
 label1.add_style(tstyle,0)
+
+def drag_event_handler(e):
+
+    obj = e.get_target()
+
+    indev = lv.indev_get_act()
+
+    vect = lv.point_t()
+    indev.get_vect(vect)
+    x = obj.get_x() + vect.x
+    y = obj.get_y() + vect.y
+#    print(x,y)
+
+meter.add_event_cb(drag_event_handler, lv.EVENT.PRESSING, None)
+
 import mqtt
 
 
