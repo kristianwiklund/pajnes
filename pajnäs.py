@@ -35,11 +35,14 @@ disp_drv.hor_res = 320
 disp_drv.ver_res = 240
 disp_drv.register()
 
-# Register SDL mouse driver
+# Register evdev mouse driver (SDL doesn't work)
 indev_drv = lv.indev_drv_t()
 indev_drv.init()
 indev_drv.type = lv.INDEV_TYPE.POINTER
-indev_drv.read_cb = SDL.mouse_read
+
+import evdev
+evdev_drv = evdev.mouse_indev()
+indev_drv.read_cb = evdev_drv.mouse_read
 indev_drv.register()
 
 
@@ -70,10 +73,21 @@ def set_arc_value(indic,v):
     meter.set_indicator_end_value(indic, v)
     
 print("A")
+
+#
+# Tabs
+#
+
+tabview = lv.tabview(lv.scr_act(), lv.DIR.LEFT, 80)
+#tabview.get_content().add_event_cb(scroll_begin_event, lv.EVENT.SCROLL_BEGIN, None)
+tab1 = tabview.add_tab("Power")
+tab2 = tabview.add_tab("Week")
+tab3 = tabview.add_tab("Month")
+
 #
 # A simple meter
 #
-meter = lv.meter(lv.scr_act())
+meter = lv.meter(tab1)
 meter.add_style(style,0)
 meter.center()
 meter.set_size(240, 240)
@@ -124,7 +138,7 @@ def sub_cb(topic, msg):
   
 def connect_and_subscribe():
   global client_id, mqtt_server, topic_sub
-  client = mqtt.MQTTClient(client_id, mqtt_server,keepalive=60)
+  client = mqtt.MQTTClient(client_id, mqtt_server,keepalive=3600)
   client.set_callback(sub_cb)
   client.connect()
   client.subscribe(topic_sub)
@@ -146,7 +160,8 @@ except OSError as e:
 while True:
   try:
       client.check_msg()
-
+#      indev_drv.read_task()
+      
   except OSError as e:
       #import traceback
 
