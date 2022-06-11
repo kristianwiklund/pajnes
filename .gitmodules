@@ -7,3 +7,6 @@
 [submodule "ticktock"]
 	path = ticktock
 	url = https://github.com/ytyou/ticktock.git
+[submodule "ESP-MicroPython"]
+	path = ESP-MicroPython
+	url = https://github.com/RuiSantosdotme/ESP-MicroPython.git
