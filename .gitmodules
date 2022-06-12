@@ -1,5 +1,5 @@
 [submodule "lv_micropython"]
-	path = mvp/lv_micropython
+	path = lv_micropython
 	url = https://github.com/lvgl/lv_micropython.git
 [submodule "Raspberry-Pi-Installer-Scripts"]
 	path = Raspberry-Pi-Installer-Scripts
@@ -8,5 +8,5 @@
 	path = ticktock
 	url = https://github.com/ytyou/ticktock.git
 [submodule "mvp/gpio-evdev-driver"]
-	path = mvp/gpio-evdev-driver
+	path = gpio-evdev-driver
 	url = https://github.com/robbeofficial/gpio-evdev-driver.git
