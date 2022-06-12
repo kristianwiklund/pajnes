@@ -9,7 +9,7 @@ import lvgl as lv
 
 # evdev driver for keyboard
 class keyboard_indev:
-    def __init__(self, device='/dev/input/event1'):
+    def __init__(self, device='/dev/input/event0'):
 
         # Open evdev and initialize members
         self.evdev = open(device, 'rb')
@@ -20,7 +20,7 @@ class keyboard_indev:
         self.indev_drv = lv.indev_drv_t()
         self.indev_drv.init()
         self.indev_drv.type = lv.INDEV_TYPE.KEYPAD
-        self.indev_drv.read_cb = self.mouse_read
+        self.indev_drv.read_cb = self.keyboard_read
         self.indev = self.indev_drv.register()
 
     def keyboard_read(self, indev_drv, data) -> int:
@@ -30,21 +30,14 @@ class keyboard_indev:
             return 0
 
         # Read and parse evdev mouse data
-        (tv_sec, tv_usec, type, code, value) = struct.unpack('llHHI',self.evdev.read(struct.calcsize(FORMAT)))
-
-        # Data is relative, update coordinates
-        #data.point.x += mouse_data[1]
-        #data.point.y -= mouse_data[2]
-
-        # Handle coordinate overflow cases
-        #data.point.x = min(data.point.x, self.hor_res - 1)
-        #data.point.y = min(data.point.y, self.ver_res - 1)
-        #data.point.x = max(data.point.x, 0)
-        #data.point.y = max(data.point.y, 0)
-
+        (tv_sec, tv_usec, type, code, value) = ustruct.unpack('llHHI',self.evdev.read(ustruct.calcsize("llHHI")))
+        print("Keyboard",type,code,value)
+        
         # Update "pressed" status
         #data.state = lv.INDEV_STATE.PRESSED if ((mouse_data[0] & 1) == 1) else lv.INDEV_STATE.RELEASED
-
+        data.key = code
+        data.state = lv.INDEV_STATE.PRESSED if value==1 else lv.INDEV_STATE.RELEASED
+        
         # Draw cursor, if needed
         #if self.cursor: self.cursor(data)
         return 0

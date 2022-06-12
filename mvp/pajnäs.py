@@ -50,14 +50,16 @@ indev_drv.read_cb = evdev_drv.mouse_read
 indev_drv.register()
 
 
-# Register keyboard driver 
+# Register keyboard driver
+import evdev_kbd
 indev_drv = lv.indev_drv_t()
 indev_drv.init()
 indev_drv.type = lv.INDEV_TYPE.KEYPAD
 indev = lv.indev_t()
 
-evdev_drv = evdev
-indev_drv.read_cb = evdev_drv.read
+evdev_drv = evdev_kbd.keyboard_indev()
+indev_drv.read_cb = evdev_drv.keyboard_read
+
 indev_drv.register()
 
 
