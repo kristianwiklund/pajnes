@@ -50,6 +50,17 @@ indev_drv.read_cb = evdev_drv.mouse_read
 indev_drv.register()
 
 
+# Register keyboard driver 
+indev_drv = lv.indev_drv_t()
+indev_drv.init()
+indev_drv.type = lv.INDEV_TYPE.KEYPAD
+indev = lv.indev_t()
+
+evdev_drv = evdev
+indev_drv.read_cb = evdev_drv.read
+indev_drv.register()
+
+
 style = lv.style_t()
 style.init()
 
@@ -82,11 +93,21 @@ print("A")
 # Tabs
 #
 
-tabview = lv.tabview(lv.scr_act(), lv.DIR.LEFT, 80)
+tabview = lv.tabview(lv.scr_act(), lv.DIR.RIGHT, 80)
 #tabview.get_content().add_event_cb(scroll_begin_event, lv.EVENT.SCROLL_BEGIN, None)
-tab1 = tabview.add_tab("Power")
 tab2 = tabview.add_tab("Week")
+tab1 = tabview.add_tab("Power")
 tab3 = tabview.add_tab("Month")
+tab4 = tabview.add_tab("Year")
+
+
+#
+# test
+#
+
+ta = lv.textarea(tab2)
+ta.add_state(lv.STATE.FOCUSED)   # To be sure the cursor is visible
+
 
 #
 # A simple meter

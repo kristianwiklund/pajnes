@@ -7,3 +7,9 @@
 [submodule "ticktock"]
 	path = ticktock
 	url = https://github.com/ytyou/ticktock.git
+[submodule "mvp/python3-gpiod"]
+	path = mvp/gpiod
+	url = https://github.com/hhk7734/python3-gpiod
+[submodule "mvp/gpio-evdev-driver"]
+	path = mvp/gpio-evdev-driver
+	url = https://github.com/robbeofficial/gpio-evdev-driver.git
