@@ -1,4 +1,4 @@
-# LVGL indev driver for evdev mouse device
+# evdev kbd driver, adapted from the micropython LVGL indev driver for evdev mouse device
 # (for the unix micropython port)
 
 import ustruct
