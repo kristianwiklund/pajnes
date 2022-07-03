@@ -56,6 +56,7 @@ class MyHomePage extends StatefulWidget {
 class MyHomePageState extends State<MyHomePage> {
 
   double _counter = 0;
+  double _max = 5000; // start at 5 kW
   
   //  String broker           = '10.168.0.1';
   int port                = 1880;
@@ -77,7 +78,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   void _subscribeToTopic(String topic) {
     if (connectionState == mqtt.MqttConnectionState.connected) {
-        print('[MQTT client] Subscribing to ${topic.trim()}');
+      //        //print('[MQTT client] Subscribing to ${topic.trim()}');
         client.subscribe(topic, mqtt.MqttQos.exactlyOnce);
     }
   }
@@ -104,7 +105,7 @@ class MyHomePageState extends State<MyHomePage> {
     /// client.port = 80;  ( or whatever your WS port is)
     /// Note do not set the secure flag if you are using wss, the secure flags is for TCP sockets only.
     /// Set logging on if needed, defaults to off
-    client.logging(on: true);
+    //client.logging(on: true);
 
     /// If you intend to use a keep alive value in your connect message that is not the default(60s)
     /// you must set it here
@@ -121,7 +122,7 @@ class MyHomePageState extends State<MyHomePage> {
         .startClean() // Non persistent session for testing
         .keepAliveFor(30)
         .withWillQos(mqtt.MqttQos.atMostOnce);
-    print('[MQTT client] MQTT client connecting....');
+    //print('[MQTT client] MQTT client connecting....');
     client.connectionMessage = connMess;
 
     /// Connect the client, any errors here are communicated by raising of the appropriate exception. Note
@@ -130,19 +131,19 @@ class MyHomePageState extends State<MyHomePage> {
     try {
       await client.connect();
     } catch (e) {
-      print(e);
+      //print(e);
       _disconnect();
     }
 
     /// Check if we are connected
     if (client.connectionState == mqtt.MqttConnectionState.connected) {
-      print('[MQTT client] connected');
+      //print('[MQTT client] connected');
       setState(() {
         connectionState = client.connectionState!;
       });
     } else {
-      print('[MQTT client] ERROR: MQTT client connection failed - '
-          'disconnecting, state is ${client.connectionState}');
+      //print('[MQTT client] ERROR: MQTT client connection failed - '
+      //    'disconnecting, state is ${client.connectionState}');
       _disconnect();
     }
 
@@ -154,23 +155,23 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   void _disconnect() {
-    print('[MQTT client] _disconnect()');
+    //print('[MQTT client] _disconnect()');
     client.disconnect();
     _onDisconnected();
   }
 
   void _onDisconnected() {
-    print('[MQTT client] _onDisconnected');
+    //print('[MQTT client] _onDisconnected');
     setState(() {
       //topics.clear();
       connectionState = client.connectionState!;
       //subscription.cancel();
     });
-    print('[MQTT client] MQTT client disconnected');
+    //print('[MQTT client] MQTT client disconnected');
   }
 
   int _onMessage(List<mqtt.MqttReceivedMessage> event) {
-    print(event.length);
+    //print(event.length);
     final mqtt.MqttPublishMessage recMess =
     event[0].payload as mqtt.MqttPublishMessage;
     final String message =
@@ -181,15 +182,15 @@ class MyHomePageState extends State<MyHomePage> {
     /// lets not constrain ourselves yet until the package has been in the wild
     /// for a while.
     /// The payload is a byte buffer, this will be specific to the topic
-    print('[MQTT client] MQTT message: topic is <${event[0].topic}>, '
-        'payload is <-- ${message} -->');
-    print(client.connectionState);
-    print("[MQTT client] message with topic: ${event[0].topic}");
-    print("[MQTT client] message with message: ${message}");
+    //print('[MQTT client] MQTT message: topic is <${event[0].topic}>, '
+    //'payload is <-- ${message} -->');
+    //print(client.connectionState);
+    //print("[MQTT client] message with topic: ${event[0].topic}");
+    //print("[MQTT client] message with message: ${message}");
     setState(() {
     	var x = double.parse(message);
 	_counter=x*1000;
-	print(x);
+	//print(x);
     });
     return (0);
   }
@@ -210,29 +211,28 @@ class MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: 	  
-	  RadialGauge(
+      body:
+      Column(children: [
+			Expanded(child: Container(child: RadialGauge(
+								     
                 axes: [
                   RadialGaugeAxis(
                     minValue: 0,
-                    maxValue: 40000,
-                    minAngle: -150,
-                    maxAngle: 150,
+                    maxValue: _max,
+                    minAngle: -120,
+                    maxAngle: 120,
                     radius: 0.6,
                     width: 0.2,
 		    ticks: [
 			    RadialTicks(
-					interval: 500,
+					interval: 1000,
 					alignment: RadialTickAxisAlignment.inside,
 					color: Colors.blue,
 					length: 0.2,
 					children: [
 						   RadialTicks(
-							       ticksInBetween: 5,
-							       length: 0.1,
+							       ticksInBetween: 10,
+							       length: 0.075,
 							       color: Colors.grey[500]!),
 						   ])
 			    ],
@@ -255,12 +255,18 @@ class MyHomePageState extends State<MyHomePage> {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                         ),
-                      ),
+					  ),
                     ],
-                  ),
+				  ),
                 ],
-              ),
-        ),
-    );
+								     ))), // radialgauge
+			Expanded(
+				 child: Text("$_counter",
+					     style: TextStyle(fontSize:20))
+				 
+				 ),
+							]), // column
+      
+		    ); //scaffold
   }
 }
