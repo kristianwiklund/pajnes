@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gauges/gauges.dart';
 import 'package:mqtt_client/mqtt_client.dart' as mqtt;
 import 'package:mqtt_client/mqtt_server_client.dart';
+import 'dart:math';
 
 
 void main() => runApp(MyApp());
@@ -186,7 +187,9 @@ class MyHomePageState extends State<MyHomePage> {
     print("[MQTT client] message with topic: ${event[0].topic}");
     print("[MQTT client] message with message: ${message}");
     setState(() {
-      _counter = double.parse(message);
+    	var x = double.parse(message);
+	_counter=x*1000;
+	print(x);
     });
     return (0);
   }
@@ -215,41 +218,25 @@ class MyHomePageState extends State<MyHomePage> {
                 axes: [
                   RadialGaugeAxis(
                     minValue: 0,
-                    maxValue: 40,
+                    maxValue: 40000,
                     minAngle: -150,
                     maxAngle: 150,
                     radius: 0.6,
                     width: 0.2,
-                    segments: [
-                      RadialGaugeSegment(
-                        minValue: 0,
-                        maxValue: 10,
-                        minAngle: -150,
-                        maxAngle: -150 + 75.0 - 1,
-                        color: Colors.green,
-                      ),
-                      RadialGaugeSegment(
-                        minValue: 10,
-                        maxValue: 20,
-                        minAngle: -150.0 + 75,
-                        maxAngle: -150.0 + 150 - 1,
-                        color: Colors.yellow,
-                      ),
-                      RadialGaugeSegment(
-                        minValue: 20,
-                        maxValue: 30,
-                        minAngle: -150.0 + 150,
-                        maxAngle: -150.0 + 225 - 1,
-                        color: Colors.orange,
-                      ),
-                      RadialGaugeSegment(
-                        minValue: 30,
-                        maxValue: 40,
-                        minAngle: -150.0 + 225,
-                        maxAngle: -150.0 + 300 - 1,
-                        color: Colors.red
-                      ),
-                    ],
+		    ticks: [
+			    RadialTicks(
+					interval: 500,
+					alignment: RadialTickAxisAlignment.inside,
+					color: Colors.blue,
+					length: 0.2,
+					children: [
+						   RadialTicks(
+							       ticksInBetween: 5,
+							       length: 0.1,
+							       color: Colors.grey[500]!),
+						   ])
+			    ],
+	   
                     pointers: [
                       RadialNeedlePointer(
                         value: _counter,
