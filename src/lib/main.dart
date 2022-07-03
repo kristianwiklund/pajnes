@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gauges/gauges.dart';
 import 'package:mqtt_client/mqtt_client.dart' as mqtt;
+import 'package:mqtt_client/mqtt_server_client.dart';
 
 
 void main() => runApp(MyApp());
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Pajnäs',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Current Power Consumption'),
     );
   }
 }
@@ -59,18 +60,18 @@ class MyHomePageState extends State<MyHomePage> {
   int port                = 1880;
   String username         = '';
   String passwd           = '';
-  String clientIdentifier = 'pajnäs';
+  String clientIdentifier = 'pajnaes';
 
   //  mqtt.MqttClient client;
   mqtt.MqttConnectionState connectionState = mqtt.MqttConnectionState.faulted;
-  mqtt.MqttClient client = mqtt.MqttClient("10.168.0.1", '');
+  mqtt.MqttClient client = MqttServerClient("10.168.0.1", 'pajnäs');
   
   double _temp = 20;
 
   StreamSubscription? subscription;
 
   MyHomePageState() {
-  _connect();
+  		    _connect();
   }
 
   void _subscribeToTopic(String topic) {
@@ -92,8 +93,8 @@ class MyHomePageState extends State<MyHomePage> {
     /// of 1883 is used.
     /// If you want to use websockets rather than TCP see below.
     ///
-    client = mqtt.MqttClient("10.168.0.1", '');
-    client.port = port;
+    client = MqttServerClient("10.168.0.1", 'pajnäs');
+    //    client.port = 1880;
 
     /// A websocket URL must start with ws:// or wss:// or Dart will throw an exception, consult your websocket MQTT broker
     /// for details.
@@ -126,7 +127,7 @@ class MyHomePageState extends State<MyHomePage> {
     /// in some circumstances the broker will just disconnect us, see the spec about this, we however will
     /// never send malformed messages.
     try {
-      await client.connect(username, passwd);
+      await client.connect();
     } catch (e) {
       print(e);
       _disconnect();
@@ -185,7 +186,7 @@ class MyHomePageState extends State<MyHomePage> {
     print("[MQTT client] message with topic: ${event[0].topic}");
     print("[MQTT client] message with message: ${message}");
     setState(() {
-      _temp = double.parse(message);
+      _counter = double.parse(message);
     });
     return (0);
   }
