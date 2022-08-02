@@ -5,13 +5,27 @@ import 'package:gauges/gauges.dart';
 import 'package:mqtt_client/mqtt_client.dart' as mqtt;
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'dart:math';
+import "dart:ui";
 
+//import "powerpage.dart";
+
+class AppScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+        PointerDeviceKind.unknown,
+        PointerDeviceKind.stylus,
+        
+      };
+}
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
+  
 
   // This widget is the root of your application.
   @override
@@ -31,11 +45,14 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const MyHomePage(title: 'Current Power Consumption'),
+      scrollBehavior: AppScrollBehavior(),
     );
   }
 }
 
+
 class MyHomePage extends StatefulWidget {
+
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
@@ -73,13 +90,13 @@ class MyHomePageState extends State<MyHomePage> {
   StreamSubscription? subscription;
 
   MyHomePageState() {
-  		    _connect();
+  	_connect();
   }
 
   void _subscribeToTopic(String topic) {
     if (connectionState == mqtt.MqttConnectionState.connected) {
       //        //print('[MQTT client] Subscribing to ${topic.trim()}');
-        client.subscribe(topic, mqtt.MqttQos.exactlyOnce);
+      client.subscribe(topic, mqtt.MqttQos.exactlyOnce);
     }
   }
 
@@ -118,10 +135,10 @@ class MyHomePageState extends State<MyHomePage> {
     /// client identifier, any supplied username/password, the default keepalive interval(60s)
     /// and clean session, an example of a specific one below.
     final mqtt.MqttConnectMessage connMess = mqtt.MqttConnectMessage()
-        .withClientIdentifier(clientIdentifier)
-        .startClean() // Non persistent session for testing
-        .keepAliveFor(30)
-        .withWillQos(mqtt.MqttQos.atMostOnce);
+    .withClientIdentifier(clientIdentifier)
+    .startClean() // Non persistent session for testing
+    .keepAliveFor(30)
+    .withWillQos(mqtt.MqttQos.atMostOnce);
     //print('[MQTT client] MQTT client connecting....');
     client.connectionMessage = connMess;
 
@@ -139,7 +156,7 @@ class MyHomePageState extends State<MyHomePage> {
     if (client.connectionState == mqtt.MqttConnectionState.connected) {
       //print('[MQTT client] connected');
       setState(() {
-        connectionState = client.connectionState!;
+          connectionState = client.connectionState!;
       });
     } else {
       //print('[MQTT client] ERROR: MQTT client connection failed - '
@@ -163,9 +180,9 @@ class MyHomePageState extends State<MyHomePage> {
   void _onDisconnected() {
     //print('[MQTT client] _onDisconnected');
     setState(() {
-      //topics.clear();
-      connectionState = client.connectionState!;
-      //subscription.cancel();
+        //topics.clear();
+        connectionState = client.connectionState!;
+        //subscription.cancel();
     });
     //print('[MQTT client] MQTT client disconnected');
   }
@@ -188,14 +205,17 @@ class MyHomePageState extends State<MyHomePage> {
     //print("[MQTT client] message with topic: ${event[0].topic}");
     //print("[MQTT client] message with message: ${message}");
     setState(() {
-    	var x = double.parse(message);
-	_counter=x*1000;
-	//print(x);
+    	  var x = double.parse(message);
+	      _counter=x*1000;
+	      //print(x);
     });
     return (0);
   }
 
-  
+
+  PageController _controller = PageController(
+    initialPage: 0,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -205,68 +225,81 @@ class MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body:
-      Column(children: [
-			Expanded(child: Container(child: RadialGauge(
-								     
-                axes: [
-                  RadialGaugeAxis(
-                    minValue: 0,
-                    maxValue: _max,
-                    minAngle: -120,
-                    maxAngle: 120,
-                    radius: 0.6,
-                    width: 0.2,
-		    ticks: [
-			    RadialTicks(
-					interval: 1000,
-					alignment: RadialTickAxisAlignment.inside,
-					color: Colors.blue,
-					length: 0.2,
-					children: [
-						   RadialTicks(
-							       ticksInBetween: 10,
-							       length: 0.075,
-							       color: Colors.grey[500]!),
-						   ])
-			    ],
-	   
-                    pointers: [
-                      RadialNeedlePointer(
-                        value: _counter,
-                        thicknessStart: 20,
-                        thicknessEnd: 0,
-                        length: 0.6,
-                        knobRadiusAbsolute: 10,
-                        gradient: LinearGradient(
-                          colors: [
-                            Color(Colors.grey[400]!.value),
-                            Color(Colors.grey[400]!.value),
-                            Color(Colors.grey[600]!.value),
-                            Color(Colors.grey[600]!.value)
-                          ],
-                          stops: [0, 0.5, 0.5, 1],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-					  ),
-                    ],
-				  ),
-                ],
-								     ))), // radialgauge
-			Expanded(
-				 child: Text("$_counter",
-					     style: TextStyle(fontSize:20))
-				 
-				 ),
-							]), // column
+    return PageView(controller: _controller,
+      scrollDirection: Axis.vertical,
+        children: [powerpage(),
+          daypage(),
+          ],
+
+          );
+
       
-		    ); //scaffold
   }
+
+
+  Widget daypage() {
+    return Column(children: [
+        Text("roggerts",
+					  style: TextStyle(fontSize:20))
+        ]);
+    }
+  
+  Widget powerpage() {
+    return    Column(children: [ 
+		    Expanded(child: Container(child: RadialGauge(
+							
+							axes: [
+								RadialGaugeAxis(
+									minValue: 0,
+									maxValue: _max,
+									minAngle: -120,
+									maxAngle: 120,
+									radius: 0.6,
+									width: 0.2,
+									ticks: [
+										RadialTicks(
+											interval: 1000,
+											alignment: RadialTickAxisAlignment.inside,
+											color: Colors.blue,
+											length: 0.2,
+											children: [
+												RadialTicks(
+													ticksInBetween: 10,
+													length: 0.075,
+													color: Colors.grey[500]!),
+										])
+									],
+									
+									pointers: [
+										RadialNeedlePointer(
+											value: _counter,
+											thicknessStart: 20,
+											thicknessEnd: 0,
+											length: 0.6,
+											knobRadiusAbsolute: 10,
+											gradient: LinearGradient(
+												colors: [
+													Color(Colors.grey[400]!.value),
+													Color(Colors.grey[400]!.value),
+													Color(Colors.grey[600]!.value),
+													Color(Colors.grey[600]!.value)
+												],
+												stops: [0, 0.5, 0.5, 1],
+												begin: Alignment.topCenter,
+												end: Alignment.bottomCenter,
+											),
+										),
+									],
+								),
+							],
+				))), // radialgauge
+		    Expanded(
+			    child: Text("$_counter",
+					  style: TextStyle(fontSize:20))
+			    
+			  ),
+		]); // column
+  }
+  
+
 }
