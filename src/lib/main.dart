@@ -6,6 +6,7 @@ import 'package:mqtt_client/mqtt_client.dart' as mqtt;
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'dart:math';
 import "dart:ui";
+import 'package:slide_digital_clock/slide_digital_clock.dart';
 
 //import "powerpage.dart";
 
@@ -72,7 +73,7 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
 
-  double _power = 0;
+  int _power = 0;
   double _max = 5000; // start at 5 kW
   
   //  String broker           = '10.168.0.1';
@@ -206,7 +207,7 @@ class MyHomePageState extends State<MyHomePage> {
     //print("[MQTT client] message with message: ${message}");
     setState(() {
     	  var x = double.parse(message);
-	      _power=x*1000;
+	      _power=(x*1000).round();
 	      //print(x);
     });
     return (0);
@@ -285,7 +286,7 @@ class MyHomePageState extends State<MyHomePage> {
 						
 						pointers: [
 							RadialNeedlePointer(
-								value: _power,
+								value: _power.toDouble(),
 								thicknessStart: 20,
 								thicknessEnd: 0,
 								length: 0.6,
@@ -308,6 +309,17 @@ class MyHomePageState extends State<MyHomePage> {
       )
     );
   }
+
+  Widget digitalclock() {
+    return  DigitalClock(
+                areaDecoration: BoxDecoration(color: Colors.transparent),
+                areaAligment: AlignmentDirectional.center,
+                hourMinuteDigitDecoration:
+                    BoxDecoration(color: Colors.transparent),
+                hourMinuteDigitTextStyle: TextStyle(fontSize: 15),
+                secondDigitTextStyle: TextStyle(fontSize: 11),
+              );
+    }
   
   Widget powerpage() {
     //    return    		    FittedBox(child: powergauge()
@@ -320,8 +332,8 @@ class MyHomePageState extends State<MyHomePage> {
           flex:1,
           child:
         Container(
-            color: Colors.yellow,
-            child:          Text("banan"),
+            alignment: Alignment.topLeft,
+            child: digitalclock(),
             ),
             ),
             Expanded(
@@ -335,7 +347,6 @@ class MyHomePageState extends State<MyHomePage> {
            flex: 2,
            child:
          Container(
-           color: Colors.brown,
            child:         Text("$_power")
            ),
            ),
