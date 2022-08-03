@@ -4,9 +4,6 @@
 [submodule "Raspberry-Pi-Installer-Scripts"]
 	path = mvp/Raspberry-Pi-Installer-Scripts
 	url = https://github.com/adafruit/Raspberry-Pi-Installer-Scripts.git
-[submodule "ticktock"]
-	path = ticktock
-	url = https://github.com/ytyou/ticktock.git
 [submodule "mvp/gpio-evdev-driver"]
 	path = mvp/gpio-evdev-driver
 	url = https://github.com/robbeofficial/gpio-evdev-driver.git
