@@ -72,7 +72,7 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
 
-  double _counter = 0;
+  double _power = 0;
   double _max = 5000; // start at 5 kW
   
   //  String broker           = '10.168.0.1';
@@ -206,7 +206,7 @@ class MyHomePageState extends State<MyHomePage> {
     //print("[MQTT client] message with message: ${message}");
     setState(() {
     	  var x = double.parse(message);
-	      _counter=x*1000;
+	      _power=x*1000;
 	      //print(x);
     });
     return (0);
@@ -229,6 +229,7 @@ class MyHomePageState extends State<MyHomePage> {
       scrollDirection: Axis.vertical,
         children: [powerpage(),
           daypage(),
+          weekpage(),
           ],
 
           );
@@ -239,66 +240,107 @@ class MyHomePageState extends State<MyHomePage> {
 
   Widget daypage() {
     return Column(children: [
-        Text("roggerts",
+        Text("day view",
 					  style: TextStyle(fontSize:20))
         ]);
     }
+
+  Widget weekpage() {
+    return Column(children: [
+        Text("week view",
+					style: TextStyle(fontSize:20))
+    ]);
+    }
+
+  Widget powergauge() {
+    final size = min(MediaQuery.of(context).size.width,
+      MediaQuery.of(context).size.height)*.9;
+    
+    return SizedBox(
+      width: size,
+      height: size,
+      child: RadialGauge(
+				
+				axes: [
+					RadialGaugeAxis(
+						minValue: 0,
+						maxValue: _max,
+						minAngle: -120,
+						maxAngle: 120,
+						radius: 0.6,
+						width: 0.2,
+						ticks: [
+							RadialTicks(
+								interval: 1000,
+								alignment: RadialTickAxisAlignment.inside,
+								color: Colors.blue,
+								length: 0.2,
+								children: [
+									RadialTicks(
+										ticksInBetween: 10,
+										length: 0.075,
+										color: Colors.grey[500]!),
+							])
+						],
+						
+						pointers: [
+							RadialNeedlePointer(
+								value: _power,
+								thicknessStart: 20,
+								thicknessEnd: 0,
+								length: 0.6,
+								knobRadiusAbsolute: 10,
+								gradient: LinearGradient(
+									colors: [
+										Color(Colors.grey[400]!.value),
+										Color(Colors.grey[400]!.value),
+										Color(Colors.grey[600]!.value),
+										Color(Colors.grey[600]!.value)
+									],
+									stops: [0, 0.5, 0.5, 1],
+									begin: Alignment.topCenter,
+									end: Alignment.bottomCenter,
+								),
+							),
+						],
+          ),
+				],
+      )
+    );
+  }
   
   Widget powerpage() {
-    return    Column(children: [ 
-		    Expanded(child: Container(child: RadialGauge(
-							
-							axes: [
-								RadialGaugeAxis(
-									minValue: 0,
-									maxValue: _max,
-									minAngle: -120,
-									maxAngle: 120,
-									radius: 0.6,
-									width: 0.2,
-									ticks: [
-										RadialTicks(
-											interval: 1000,
-											alignment: RadialTickAxisAlignment.inside,
-											color: Colors.blue,
-											length: 0.2,
-											children: [
-												RadialTicks(
-													ticksInBetween: 10,
-													length: 0.075,
-													color: Colors.grey[500]!),
-										])
-									],
-									
-									pointers: [
-										RadialNeedlePointer(
-											value: _counter,
-											thicknessStart: 20,
-											thicknessEnd: 0,
-											length: 0.6,
-											knobRadiusAbsolute: 10,
-											gradient: LinearGradient(
-												colors: [
-													Color(Colors.grey[400]!.value),
-													Color(Colors.grey[400]!.value),
-													Color(Colors.grey[600]!.value),
-													Color(Colors.grey[600]!.value)
-												],
-												stops: [0, 0.5, 0.5, 1],
-												begin: Alignment.topCenter,
-												end: Alignment.bottomCenter,
-											),
-										),
-									],
-								),
-							],
-				))), // radialgauge
-		    Expanded(
-			    child: Text("$_counter",
-					  style: TextStyle(fontSize:20))
-			    
-			  ),
-		]); // column
+    //    return    		    FittedBox(child: powergauge()
+    //        );
+
+    //    return powergauge();
+
+    return Column(children:  [
+        Expanded(
+          flex:1,
+          child:
+        Container(
+            color: Colors.yellow,
+            child:          Text("banan"),
+            ),
+            ),
+            Expanded(
+              flex: 7,
+              child: 
+        Container(
+           child:          powergauge(),
+         ),
+         ),
+         Expanded(
+           flex: 2,
+           child:
+         Container(
+           color: Colors.brown,
+           child:         Text("$_power")
+           ),
+           ),
+          ]);
+
   }
   
 
