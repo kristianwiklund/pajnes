@@ -20,3 +20,10 @@ HW: rpi with "official"  rpi 7 inch touch screen
 ## exporting to rpi
 
 Intentionally left blank
+
+## directory structure
+
+* mvp - early code built with circuitpython
+* app - flutter-based frontend
+* db - time series database-related
+
