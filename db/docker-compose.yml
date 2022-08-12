@@ -1,0 +1,17 @@
+version: '3.3'
+services:
+    influxdb:
+        container_name: influxdb
+        ports:
+            - '8086:8086'
+        volumes:
+            - '~/influx:/root/.influxdb2'
+        network_mode: influxdb-telegraf-net
+        image: 'influxdb:2.0'
+
+    telegraf:
+        container_name: telegraf
+        volumes:
+             - './telegraf.conf:/var/lib/influxdb'
+        network_mode: influxdb-telegraf-net
+        image: telegraf

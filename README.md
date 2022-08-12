@@ -27,3 +27,16 @@ Intentionally left blank
 * app - flutter-based frontend
 * db - time series database-related
 
+---
+
+# Design Docs
+
+## Consuming Data
+
+The default behavior is to listen for messages from an [ESPHome P1 Reader](https://github.com/psvanstrom/esphome-p1reader).
+
+Implemented: The app itself consumes the message *esp-p1reader/sensor/momentary_active_import/state* and displays the payload on the first page (the power gauge page).
+
+Will be implemented:_All_ messages from the esp-p1reader are stored in an influxd database, using a [telegraf-influxd](https://www.influxdata.com/blog/mqtt-topic-payload-parsing-telegraf/) setup.
+
+
