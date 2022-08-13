@@ -4,6 +4,13 @@
 Consumes mqtt from https://github.com/psvanstrom/esphome-p1reader to display things on screen.
 HW: rpi with "official"  rpi 7 inch touch screen
 
+## Caveat Emptor
+
+* There is no security whatsoever in this solution.
+** Do not connect it directly to the internet.
+** Do not use it in a hostile environment.
+* Read the [LICENSE] for more information.
+
 ## rpi installation
 
 1. Scratch install an sd card with raspbian buster lite

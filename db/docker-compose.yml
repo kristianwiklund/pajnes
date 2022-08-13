@@ -9,6 +9,16 @@ services:
         network_mode: influxdb-telegraf-net
         image: 'influxdb:2.0'
 
+
+    mosquitto:
+      container_name: mosquitto
+      ports:
+        - '1883:1883'
+        - '9001:9001'
+      volumes:
+        - 'mosquitto.conf:/mosquitto/config/mosquitto.conf'
+      image: eclipse-mosquitto
+        
     telegraf:
         container_name: telegraf
         volumes:
@@ -16,4 +26,6 @@ services:
         network_mode: influxdb-telegraf-net
         depends_on:
              - "influxdb"
+             - "mosquitto"         
         image: telegraf
+
