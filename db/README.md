@@ -1,5 +1,7 @@
 # telegraf-influx configuration
 
+Here be dragons - do not assume that I know what I am doing.
+
 See the [tutorial](https://www.influxdata.com/blog/running-influxdb-2-0-and-telegraf-using-docker/) from influxdata.
 
 The influx data is stored in ~/influx, can be changed in the docker-compose.yml file.

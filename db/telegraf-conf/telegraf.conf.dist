@@ -1,13 +1,13 @@
-[outputs.influxdb_v2]]
- ## The URLs of the InfluxDB cluster nodes.
-  ##
+[[outputs.influxdb_v2]]
+## The URLs of the InfluxDB cluster nodes.
+  ##	 
    ## Multiple URLs can be specified for a single cluster, only ONE of the
     ## urls will be written to each interval.
      ## urls exp: http://127.0.0.1:8086
-      urls = ["http://influxdb:8086"]
+  urls = ["http://influxdb:8086"]
 
  ## Token for authentication.
-  token = "$DOCKER_INFLUXDB_INIT_ADMIN_TOKEN"
+  token = "<storpotatens hemliga kod>"
 
  ## Organization is the name of the organization you wish to write to; must exist.
   organization = "pajnes"
@@ -22,15 +22,12 @@
   ##            servers = ["ssl://localhost:1883"]
   ##            servers = ["ws://localhost:1883"]
 
-  ## once functional, move to local mqtt broker and set up either the remote mosquitto to feed
-  ## the local one, or point esp-p1reader this way
-  
-  servers = ["tcp://10.168.0.1:1883"]
+  servers = ["tcp://127.0.0.1:1883"]
   
 
   ## Topics that will be subscribed to.
   topics = [
-    "esp-p1reader/#"
+    "esp-p1reader/sensor/#"
     ]
 
   ## The message topic will be stored in a tag specified by this value.  If set
